@@ -7,4 +7,16 @@
         <item name="android:statusBarColor">?attr/colorPrimary</item>
         <item name="android:textColor">@color/black</item>
     </style>
+
+    <style name="normal_text">
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">@font/roboto</item>
+        <item name="android:textColor">@color/black </item>
+    </style>
+    <style name="custom_text_input_layout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxCornerRadiusTopEnd">30dp</item>
+        <item name="boxCornerRadiusTopStart">30dp</item>
+        <item name="boxCornerRadiusBottomEnd">30dp</item>
+        <item name="boxCornerRadiusBottomStart">30dp</item>
+    </style>
 </resources>
