@@ -48,6 +48,7 @@ dependencies {
     implementation("androidx.activity:activity-ktx:1.3.1")
     implementation("androidx.constraintlayout:constraintlayout:2.1.2")
     implementation("com.google.android.material:material3:1.5.0-alpha01")
+    implementation(libs.androidx.activity)
 
 // Testing
     testImplementation("junit:junit:4.13.2")
