@@ -8,6 +8,7 @@ pluginManagement {
             }
         }
         mavenCentral()
+        jcenter() // Add this line
         gradlePluginPortal()
     }
 }
@@ -16,9 +17,9 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        jcenter() // Add this line
     }
 }
 
 rootProject.name = "Room DB"
 include(":app")
- 
