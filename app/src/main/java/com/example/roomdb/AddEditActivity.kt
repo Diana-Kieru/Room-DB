@@ -26,11 +26,7 @@ class AddEditActivity : AppCompatActivity(), HubAdapter.OnEditClickListener {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_add_edit)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+
 
         // Initialize the adapter with an empty list
         hubAdapter = HubAdapter(emptyList(), ::deleteHub, this)

@@ -20,7 +20,7 @@
                 android:id="@+id/titleText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Hub Registration"
+                android:text="Hub Update"
                 android:textSize="24dp"
                 android:gravity="center"
                 android:textColor="@color/white"
