@@ -5,12 +5,15 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.roomdb.R
 import com.example.roomdb.models.Hub
+import com.google.android.material.button.MaterialButton
 
-class HubAdapter(private var hubList: List<Hub>) : RecyclerView.Adapter<HubAdapter.HubViewHolder>() {
+class HubAdapter(private var hubList: List<Hub>, private val onDelete: (Hub) -> Unit) : RecyclerView.Adapter<HubAdapter.HubViewHolder>() {
 
     inner class HubViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val tvHubName: TextView = itemView.findViewById(R.id.tvHubName)
         val tvRegion: TextView = itemView.findViewById(R.id.tvRegion)
+        val btnDeleteHub: MaterialButton = itemView.findViewById(R.id.btnDeleteHub)
+        val btnEditHub: MaterialButton = itemView.findViewById(R.id.btnEditHub)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HubViewHolder {
@@ -22,6 +25,14 @@ class HubAdapter(private var hubList: List<Hub>) : RecyclerView.Adapter<HubAdapt
         val hub = hubList[position]
         holder.tvHubName.text = hub.hubName
         holder.tvRegion.text = hub.region
+
+        holder.btnDeleteHub.setOnClickListener {
+            onDelete(hub)
+        }
+
+        holder.btnEditHub.setOnClickListener {
+            // Handle edit hub action
+        }
     }
 
     fun updateList(newList: List<Hub>) {

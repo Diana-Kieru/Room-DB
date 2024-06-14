@@ -1,8 +1,10 @@
 package com.example.roomdb
 
 import HubAdapter
+import RestClient
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -29,7 +31,9 @@ class AddEditActivity : AppCompatActivity() {
         }
 
         // Initialize the adapter with an empty list
-        hubAdapter = HubAdapter(emptyList())
+        hubAdapter = HubAdapter(emptyList()) { hub ->
+            deleteHub(hub.id)
+        }
 
         // Get the reference to the RecyclerView
         recyclerView = findViewById(R.id.rvHubs)
@@ -44,6 +48,7 @@ class AddEditActivity : AppCompatActivity() {
             startActivity(intent)
         }
     }
+
 
     private fun fetchHubs() {
         val sharedPreferences = getSharedPreferences("sharedPrefs", MODE_PRIVATE)
@@ -71,6 +76,35 @@ class AddEditActivity : AppCompatActivity() {
             }
         }
     }
+
+    private fun deleteHub(id: Int) {
+        val sharedPreferences = getSharedPreferences("sharedPrefs", MODE_PRIVATE)
+        val token = sharedPreferences.getString("accessToken", "") ?: ""
+        val apiService = RestClient.getApiService(applicationContext)
+
+        lifecycleScope.launch {
+            try {
+                val response = apiService.deleteHub("Bearer $token", id)
+                if (response.isSuccessful) {
+                    // Hub deleted successfully
+                    showToastMessage("Hub deleted successfully")
+                    // Refresh the list of hubs
+                    fetchHubs()
+                } else {
+                    // Handle API error
+                    showToastMessage("Failed to delete hub: ${response.message()}")
+                }
+            } catch (e: Exception) {
+                // Handle network error
+                showToastMessage("Network error: ${e.message}")
+            }
+        }
+    }
+
+    private fun showToastMessage(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
     private fun setupRecyclerView(hubList: List<Hub>) {
         hubAdapter.updateList(hubList)
     }

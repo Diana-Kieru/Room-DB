@@ -5,12 +5,15 @@ import com.example.roomdb.models.HubResponse
 import com.example.roomdb.models.LoginRequest
 import com.example.roomdb.models.LoginResponse
 import com.example.roomdb.models.RegisterRequest
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.Path
 
 interface ApiService {
     @POST("login")
@@ -23,4 +26,12 @@ interface ApiService {
     suspend fun getHubs(@Header("Authorization") token: String): Response<HubResponse>
 
 
+    @DELETE("hubs/{id}")
+    suspend fun deleteHub(
+        @Header("Authorization") token: String,
+        @Path("id") id: Int
+    ): Response<ResponseBody>
 }
+
+
+
