@@ -1,5 +1,4 @@
 # Room-DB
-# Project Name
 
 Hub Management Mobile Application.
 
@@ -8,7 +7,6 @@ Hub Management Mobile Application.
 Before you begin, ensure you have met the following requirements:
 
 * You have installed the latest version of [Android Studio](https://developer.android.com/studio)
- 
 
 ## Building the App
 
