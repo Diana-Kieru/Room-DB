@@ -56,9 +56,12 @@ class AddEditActivity : AppCompatActivity() {
                 if (response.isSuccessful) {
                     val hubList = response.body()?.forms
                     if (hubList != null) {
-                        setupRecyclerView(hubList)
-                        // Update the adapter with the new list
-                        hubAdapter.updateList(hubList)
+                        // Sort the hubList in descending order based on the ID
+                        val sortedHubList = hubList.sortedByDescending { it.id }
+
+                        setupRecyclerView(sortedHubList)
+                        // Update the adapter with the sorted list
+                        hubAdapter.updateList(sortedHubList)
                     }
                 } else {
                     // Handle API error
