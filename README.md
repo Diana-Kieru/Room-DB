@@ -1,7 +1,7 @@
 # Room-DB
 # Project Name
 
-Provide a brief description of your project here.
+Hub Management Mobile Application.
 
 ## Prerequisites
 
