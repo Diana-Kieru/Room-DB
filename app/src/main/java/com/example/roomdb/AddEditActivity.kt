@@ -12,10 +12,12 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.example.roomdb.models.Hub
+import com.example.roomdb.models.ParcelableHub
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.gson.Gson
 import kotlinx.coroutines.launch
 
-class AddEditActivity : AppCompatActivity() {
+class AddEditActivity : AppCompatActivity(), HubAdapter.OnEditClickListener {
     private lateinit var fabAddHub: FloatingActionButton
     private lateinit var hubAdapter: HubAdapter
     private lateinit var recyclerView: RecyclerView
@@ -31,9 +33,7 @@ class AddEditActivity : AppCompatActivity() {
         }
 
         // Initialize the adapter with an empty list
-        hubAdapter = HubAdapter(emptyList()) { hub ->
-            deleteHub(hub.id)
-        }
+        hubAdapter = HubAdapter(emptyList(), ::deleteHub, this)
 
         // Get the reference to the RecyclerView
         recyclerView = findViewById(R.id.rvHubs)
@@ -49,6 +49,36 @@ class AddEditActivity : AppCompatActivity() {
         }
     }
 
+    override fun onEditClick(hub: Hub) {
+        val gson = Gson()
+        val keyContactsJson = gson.toJson(hub.keyContacts)
+
+        val parcelableHub = ParcelableHub(
+            hub.id,
+            hub.hubName,
+            hub.hubCode,
+            hub.address,
+            hub.yearEstablished,
+            hub.ownership,
+            hub.floorSize,
+            hub.facilities,
+            hub.inputCenter,
+            hub.typeOfBuilding,
+            hub.longitude,
+            hub.latitude,
+            hub.region,
+            keyContactsJson,
+            hub.userId
+        )
+
+        // Rest of your code...
+
+
+
+        val intent = Intent(this, EditHubActivity::class.java)
+        intent.putExtra("hubData", parcelableHub)
+        startActivity(intent)
+    }
 
     private fun fetchHubs() {
         val sharedPreferences = getSharedPreferences("sharedPrefs", MODE_PRIVATE)
@@ -77,7 +107,8 @@ class AddEditActivity : AppCompatActivity() {
         }
     }
 
-    private fun deleteHub(id: Int) {
+    private fun deleteHub(hub: Hub) {
+        val id = hub.id
         val sharedPreferences = getSharedPreferences("sharedPrefs", MODE_PRIVATE)
         val token = sharedPreferences.getString("accessToken", "") ?: ""
         val apiService = RestClient.getApiService(applicationContext)

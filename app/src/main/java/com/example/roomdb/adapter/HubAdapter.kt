@@ -7,7 +7,15 @@ import com.example.roomdb.R
 import com.example.roomdb.models.Hub
 import com.google.android.material.button.MaterialButton
 
-class HubAdapter(private var hubList: List<Hub>, private val onDelete: (Hub) -> Unit) : RecyclerView.Adapter<HubAdapter.HubViewHolder>() {
+class HubAdapter(
+    private var hubList: List<Hub>,
+    private val onDelete: (Hub) -> Unit,
+    private val onEditClickListener: OnEditClickListener
+) : RecyclerView.Adapter<HubAdapter.HubViewHolder>() {
+
+    interface OnEditClickListener {
+        fun onEditClick(hub: Hub)
+    }
 
     inner class HubViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val tvHubName: TextView = itemView.findViewById(R.id.tvHubName)
@@ -31,7 +39,7 @@ class HubAdapter(private var hubList: List<Hub>, private val onDelete: (Hub) -> 
         }
 
         holder.btnEditHub.setOnClickListener {
-            // Handle edit hub action
+            onEditClickListener.onEditClick(hub)
         }
     }
 
