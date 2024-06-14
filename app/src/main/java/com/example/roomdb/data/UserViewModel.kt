@@ -9,7 +9,6 @@ import com.example.roomdb.data.UserDatabase
 import com.example.roomdb.data.UserRepository
 import com.example.roomdb.models.LoginRequest
 import com.example.roomdb.models.LoginResponse
-import com.example.roomdb.network.RestClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.Call

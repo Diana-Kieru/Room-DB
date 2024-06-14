@@ -1,16 +1,22 @@
 package com.example.roomdb.network
 
+import RegisterResponse
+import com.example.roomdb.models.HubResponse
 import com.example.roomdb.models.LoginRequest
 import com.example.roomdb.models.LoginResponse
 import com.example.roomdb.models.RegisterRequest
-import com.example.roomdb.models.RegisterResponse
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.POST
 
 interface ApiService {
     @POST("login")
     fun loginUser(@Body loginRequest: LoginRequest): Call<LoginResponse>
-    @POST("register")
+    @POST("hubs")
     fun registerUser(@Body registerRequest: RegisterRequest): Call<RegisterResponse>
+    @GET("hubs")
+    suspend fun getHubs(): Response<HubResponse>
+
 }

@@ -1,5 +1,7 @@
-package com.example.roomdb.models
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class RegisterResponse(
     val id: Int,
     val region: String,
@@ -16,8 +18,9 @@ data class RegisterResponse(
     val latitude: String,
     val key_contacts: List<KeyContactResponse>,
     val user_id: String
-)
+) : Parcelable
 
+@Parcelize
 data class KeyContactResponse(
     val other_name: String,
     val last_name: String,
@@ -29,4 +32,4 @@ data class KeyContactResponse(
     val id_number: Int,
     val hub_id: Int,
     val buying_center_id: Int
-)
+) : Parcelable
