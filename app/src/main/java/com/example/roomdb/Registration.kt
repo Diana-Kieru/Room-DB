@@ -1,11 +1,10 @@
 package com.example.roomdb
 
 import RegisterResponse
+import RestClient
+import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
-import android.view.View
 import android.widget.Button
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -16,6 +15,9 @@ import com.google.android.material.textfield.TextInputEditText
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 class Registration : AppCompatActivity() {
 
@@ -39,7 +41,6 @@ class Registration : AppCompatActivity() {
     private lateinit var etKeyContactEmail: TextInputEditText
     private lateinit var etKeyContactPhoneNumber: TextInputEditText
     private lateinit var etKeyContactIdNumber: TextInputEditText
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,16 +68,32 @@ class Registration : AppCompatActivity() {
         etKeyContactPhoneNumber = findViewById(R.id.etKeyContactPhoneNumber)
         etKeyContactIdNumber = findViewById(R.id.etKeyContactIdNumber)
 
-
-//        setupTextWatchers()
-
         val btnRegister = findViewById<Button>(R.id.btnRegister)
-
-        // Set a click listener
         btnRegister.setOnClickListener {
             registerUser()
         }
 
+        etYearEstablished.setOnClickListener {
+            showDatePickerDialog(etYearEstablished, "yyyy")
+        }
+
+        etKeyContactDateOfBirth.setOnClickListener {
+            showDatePickerDialog(etKeyContactDateOfBirth, "dd/MM/yyyy")
+        }
+    }
+
+    private fun showDatePickerDialog(editText: TextInputEditText, format: String) {
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+        DatePickerDialog(this, { _, selectedYear, selectedMonth, selectedDay ->
+            val selectedDate = Calendar.getInstance()
+            selectedDate.set(selectedYear, selectedMonth, selectedDay)
+            val date = SimpleDateFormat(format, Locale.getDefault()).format(selectedDate.time)
+            editText.setText(date)
+        }, year, month, day).show()
     }
 
     private fun validateFields(): Boolean {
@@ -168,12 +185,20 @@ class Registration : AppCompatActivity() {
 
     private fun registerUser() {
         if (validateFields()) {
+            val dobInputFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+            val yearInputFormat = SimpleDateFormat("yyyy", Locale.getDefault())
+            val outputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
+            val dobDate = dobInputFormat.parse(etKeyContactDateOfBirth.text.toString())
+            val yearDate = yearInputFormat.parse(etYearEstablished.text.toString())
+            val formattedDob = outputFormat.format(dobDate)
+            val formattedYear = outputFormat.format(yearDate)
+
             val registerRequest = RegisterRequest(
                 region = etRegion.text.toString(),
                 hub_name = etHubName.text.toString(),
                 hub_code = etHubCode.text.toString(),
                 address = etAddress.text.toString(),
-                year_established = etYearEstablished.text.toString(),
+                year_established = formattedYear,
                 ownership = etOwnership.text.toString(),
                 floor_size = etFloorSize.text.toString(),
                 facilities = etFacilities.text.toString(),
@@ -187,16 +212,15 @@ class Registration : AppCompatActivity() {
                         last_name = etKeyContactLastName.text.toString(),
                         gender = etKeyContactGender.text.toString(),
                         role = etKeyContactRole.text.toString(),
-                        date_of_birth = etKeyContactDateOfBirth.text.toString(),
+                        date_of_birth = formattedDob,
                         email = etKeyContactEmail.text.toString(),
                         phone_number = etKeyContactPhoneNumber.text.toString().toIntOrNull() ?: 0,
                         id_number = etKeyContactIdNumber.text.toString().toIntOrNull() ?: 0
                     )
                 )
             )
-
-            val call = RestClient.apiService.registerUser(registerRequest)
-
+            val apiService = RestClient.getApiService(applicationContext)
+            val call = apiService.registerUser(registerRequest)
 
             call.enqueue(object : Callback<RegisterResponse> {
                 override fun onResponse(call: Call<RegisterResponse>, response: Response<RegisterResponse>) {
@@ -222,32 +246,7 @@ class Registration : AppCompatActivity() {
         }
     }
 
-//    private fun setupTextWatchers() {
-//        etLatitude.addTextChangedListener(object : TextWatcher {
-//            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-//            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-//            override fun afterTextChanged(s: Editable?) {
-//                if (s?.isNotEmpty() == true) {
-//                    etHubName.visibility = View.VISIBLE
-//                } else {
-//                    etHubName.visibility = View.GONE
-//                }
-//            }
-//        })
-//
-//        etHubName.addTextChangedListener(object : TextWatcher {
-//            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-//            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-//            override fun afterTextChanged(s: Editable?) {
-//                if (s?.isNotEmpty() == true) {
-//                    etHubCode.visibility = View.VISIBLE
-//                } else {
-//                    etHubCode.visibility = View.GONE
-//                }
-//            }
-//        })
-//    }
     private fun showToastMessage(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+        Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
     }
 }

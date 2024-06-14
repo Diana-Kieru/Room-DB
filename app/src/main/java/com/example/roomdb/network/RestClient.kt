@@ -1,4 +1,7 @@
+import android.content.Context
 import com.example.roomdb.network.ApiService
+import com.example.roomdb.utils.AuthInterceptor
+import com.example.roomdb.utils.SharedPrefs
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -12,17 +15,26 @@ object RestClient {
         level = HttpLoggingInterceptor.Level.BODY
     }
 
-    private val client = OkHttpClient.Builder()
-        .addInterceptor(loggingInterceptor)
-        .connectTimeout(30, TimeUnit.SECONDS)
-        .readTimeout(30, TimeUnit.SECONDS)
-        .writeTimeout(30, TimeUnit.SECONDS)
-        .build()
+    private lateinit var sharedPrefs: SharedPrefs
+    private lateinit var authInterceptor: AuthInterceptor
 
-    val apiService: ApiService = Retrofit.Builder()
-        .baseUrl(BASE_URL)
-        .client(client)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-        .create(ApiService::class.java)
+    private val client: OkHttpClient
+        get() = OkHttpClient.Builder()
+            .addInterceptor(loggingInterceptor)
+            .addInterceptor(authInterceptor)
+            .connectTimeout(60, TimeUnit.SECONDS)
+            .readTimeout(60, TimeUnit.SECONDS)
+            .writeTimeout(60, TimeUnit.SECONDS)
+            .build()
+
+    fun getApiService(context: Context): ApiService {
+        sharedPrefs = SharedPrefs(context)
+        authInterceptor = AuthInterceptor(sharedPrefs)
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .client(client)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(ApiService::class.java)
+    }
 }

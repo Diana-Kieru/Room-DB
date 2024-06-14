@@ -17,6 +17,7 @@ class Login : AppCompatActivity() {
     private lateinit var passwordField: EditText
     private lateinit var viewModel: UserViewModel
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)

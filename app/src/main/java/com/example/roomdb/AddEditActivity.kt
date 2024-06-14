@@ -1,7 +1,6 @@
 package com.example.roomdb
 
 import HubAdapter
-import RestClient.apiService
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
@@ -47,9 +46,13 @@ class AddEditActivity : AppCompatActivity() {
     }
 
     private fun fetchHubs() {
+        val sharedPreferences = getSharedPreferences("sharedPrefs", MODE_PRIVATE)
+        val token = sharedPreferences.getString("accessToken", "") ?: ""
+        val apiService = RestClient.getApiService(applicationContext)
+
         lifecycleScope.launch {
             try {
-                val response = apiService.getHubs()
+                val response = apiService.getHubs("Bearer $token")
                 if (response.isSuccessful) {
                     val hubList = response.body()?.forms
                     if (hubList != null) {
@@ -57,7 +60,6 @@ class AddEditActivity : AppCompatActivity() {
                         // Update the adapter with the new list
                         hubAdapter.updateList(hubList)
                     }
-
                 } else {
                     // Handle API error
                 }
@@ -66,7 +68,6 @@ class AddEditActivity : AppCompatActivity() {
             }
         }
     }
-
     private fun setupRecyclerView(hubList: List<Hub>) {
         hubAdapter.updateList(hubList)
     }
